@@ -30,7 +30,7 @@ services:
 
   dg:
     image: pingidentity/pingdatagovernance:${PING_IDENTITY_DEVOPS_TAG}
-    command: wait-for pd:389 -t 300 -- entrypoint.sh start-server
+    command: wait-for pf:9031 -t 300 -- entrypoint.sh start-server
     environment:
       - SERVER_PROFILE_URL=https://github.com/cprice-ping/Profile-AnyHealth.git
       - SERVER_PROFILE_PATH=datagov
