@@ -1,5 +1,0 @@
-dsconfig set-connection-handler-prop --handler-name "HTTPS Connection Handler" --add http-servlet-extension:SCIM --reset web-application-extension
-
-dsconfig create-request-criteria --criteria-name for-scim --type simple --set operation-type:add --set included-target-entry-dn:ou=People,${USER_BASE_DN}
-
-dsconfig set-global-configuration-prop --set auto-name-with-entry-uuid-request-criteria:for-scim

@@ -1,5 +1,0 @@
-dsconfig create-identity-mapper --mapper-name entryUUIDMatch --type exact-match --set enabled:true --set match-attribute:entryUUID --set match-base-dn:ou=people,${USER_BASE_DN}
-
-dsconfig create-access-token-validator --validator-name "Mock ATV" --type mock --set identity-mapper:entryUUIDMatch --set enabled:true
-
-dsconfig create-access-token-validator --validator-name PingFederate --type ping-federate --set identity-mapper:entryUUIDMatch --set enabled:true --set authorization-server:PingFederate --set client-id:PingDirectory --set "client-secret:AAC+J+4YJoGhE4oMFVm5HD9ACMhEKzN9HGk="

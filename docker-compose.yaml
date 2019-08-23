@@ -30,9 +30,9 @@ services:
 
   pingdatagovernance:
     image: pingidentity/pingdatagovernance:${PING_IDENTITY_DEVOPS_TAG}
-    # environment:
-    #   - SERVER_PROFILE_URL=https://github.com/cprice-ping/Server-Profiles.git
-    #   - SERVER_PROFILE_PATH=Healthcare-Demo/pingdir
+    environment:
+      - SERVER_PROFILE_URL=https://github.com/pingidentity/pingidentity-server-profiles.git
+      - SERVER_PROFILE_PATH=baseline/pingdatagovernance
     env_file:
       - ~/.pingidentity/devops
     ports:
