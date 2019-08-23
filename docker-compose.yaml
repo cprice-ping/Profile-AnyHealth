@@ -7,8 +7,8 @@ services:
     env_file:
       - ~/.pingidentity/devops
     environment:
-      - SERVER_PROFILE_URL=https://github.com/cprice-ping/Server-Profiles.git
-      - SERVER_PROFILE_PATH=Healthcare-Demo/pingfed
+      - SERVER_PROFILE_URL=https://github.com/cprice-ping/Profile-AnyHealth.git
+      - SERVER_PROFILE_PATH=pingfed
     ports:
       - 9031:9031
       - 9999:9999
@@ -20,8 +20,8 @@ services:
     env_file:
       - ~/.pingidentity/devops
     environment:
-      - SERVER_PROFILE_URL=https://github.com/cprice-ping/Server-Profiles.git
-      - SERVER_PROFILE_PATH=Healthcare-Demo/pingdir
+      - SERVER_PROFILE_URL=https://github.com/cprice-ping/Profile-AnyHealth.git
+      - SERVER_PROFILE_PATH=pingdir
     ports:
       - 1636:636
       - 1443:443
