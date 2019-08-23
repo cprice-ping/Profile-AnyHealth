@@ -43,7 +43,7 @@ services:
     networks:
       - pingnet
                     
-  pingdataconsole:
+  console:
     image: pingidentity/pingdataconsole:${PING_IDENTITY_DEVOPS_TAG}
     env_file:
       - ~/.pingidentity/devops

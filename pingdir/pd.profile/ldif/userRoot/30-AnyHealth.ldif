@@ -263,3 +263,25 @@ telephoneNumber: +1555-555-9999
 userPassword:: e1NTSEEyNTZ9ZUV3ZGpoSndkakZYbjRYL2JsK1BDMW9EOU9GNCtPL2RZS1phc
  kUzYkdtRlJXMitvVEhwUWZnPT0=
 pf-connected-identity: auth-source=pf-local-identity:user-id=csr1
+
+dn: entryUUID=5be3c2ea-66ea-4b51-8c97-e9af0e89e74c,ou=Organizations,${USER_BASE_DN}
+objectClass: fhirOrganization
+objectClass: organization
+objectClass: top
+o: acmehealth
+businessCategory: healthcare org
+description: A Healthcare organization
+displayName: Acme Health Organization
+fhirAccountNumber: 1111111111
+fhirActive: TRUE
+fhirEntitlement: { "type":"implicit", "id":"urn:ping:entitlement:fhir:app:CSR", "value":[ "read", "search", "create", "modify" ] }
+fhirRole: { "type":"implicit", "id":"urn:ping:role:fhir:organization:admin", "value":[ "read", "search", "create", "modify" ] }
+
+dn: entryUUID=eadf9f4e-c198-4665-9339-1f34e379cf30,ou=Organizations,${USER_BASE_DN}
+objectClass: fhirOrganization
+objectClass: organization
+objectClass: top
+o: acmelabs
+displayName: Acme Labs
+fhirEntitlement: { "type":"implicit", "id":"urn:ping:entitlement:fhir:app:CSR", "value":[ "read", "search", "create", "modify" ] }
+fhirRole: { "type":"implicit", "id":"urn:ping:role:fhir:organization:admin", "value":[ "read", "search", "create", "modify" ] }
