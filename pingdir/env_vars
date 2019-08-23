@@ -16,8 +16,11 @@ ROOT_USER_PASSWORD_FILE=${BASE}/staging/pwd
 # The replication administrator password file
 ADMIN_USER_PASSWORD_FILE=${ROOT_USER_PASSWORD_FILE}
 
+# The Org base value
+USER_ORG_BASE=anyhealth.org
+
 # The user base dn may be provided (Default: dc=example,dc=com)
-USER_BASE_DN=o=anyhealth.org
+USER_BASE_DN=o=${USER_ORG_BASE}
 
 # The Java heap size may be provided
 # MAX_HEAP_SIZE=384m
