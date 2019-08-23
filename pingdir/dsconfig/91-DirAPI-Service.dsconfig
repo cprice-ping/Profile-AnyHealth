@@ -1,0 +1,1 @@
+dsconfig set-http-servlet-extension-prop --extension-name "Directory REST API" --set "access-token-validator:Mock ATV" --set access-token-scope:pd:dir:access --add default-operational-attribute:entryUUID

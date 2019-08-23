@@ -1,0 +1,7 @@
+dsconfig set-consent-service-prop --set enabled:true --set base-dn:ou=Consents,${USER_BASE_DN} --set bind-dn:cn=administrator --set "consent-record-identity-mapper:entryUUIDMatch" --set "consent-record-identity-mapper:Exact Match" --set service-account-dn:cn=administrator --set unprivileged-consent-scope:pd:consents:unpriv --set privileged-consent-scope:pd:consents:priv
+
+dsconfig set-http-servlet-extension-prop --extension-name Consent --set "access-token-validator:Mock ATV"
+
+dsconfig create-consent-definition --definition-name EMR-Access --set "display-name:Electronic Medical Record Access" --set "description:This definition is use to ask and collect consent for access to a Patient's Electronic Medical Record"
+
+dsconfig create-consent-definition-localization --definition-name EMR-Access --localization-name en --set version:1.0 --set "title-text:Access to Medical Record" --set 'data-text:Individuals or Roles requesting access to your medical record' --set 'purpose-text:Used to allow Roles or Individuals to have access to all or specific elements of your medical record'

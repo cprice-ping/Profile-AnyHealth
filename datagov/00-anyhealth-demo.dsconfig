@@ -1,0 +1,25 @@
+# Initial config
+dsconfig create-external-server --server-name int-docker.anyhealth-demo.ping-eng.com:1636 --type ping-identity-ds --set server-host-name:int-docker.anyhealth-demo.ping-eng.com --set server-port:1636 --set location:Scalr --set "bind-dn:cn=Governance User,cn=Root DNs,cn=config" --set password:AAA3uDhoYIUr7stnecskW0BUo49sKY2H1JI= --set connection-security:ssl --set key-manager-provider:Null --set trust-manager-provider:JKS
+dsconfig create-load-balancing-algorithm --algorithm-name "User Store LBA" --type failover --set enabled:true --set backend-server:int-docker.anyhealth-demo.ping-eng.com:1636
+dsconfig set-store-adapter-prop --adapter-name UserStoreAdapter --set enabled:true --set "load-balancing-algorithm:User Store LBA" --set include-base-dn:ou=people,o=acmehealth.org --set create-dn-pattern:entryUUID=server-generated,ou=people,o=acmehealth.org
+dsconfig create-scim-resource-type --type-name Users --type pass-through --set enabled:true --set endpoint:Users --set primary-store-adapter:UserStoreAdapter
+
+
+# Healthcare API Config
+dsconfig create-external-server --server-name "Cerner FHIR Sandbox" --type api --set base-url:https://fhir-open.sandboxcerner.com
+dsconfig create-external-server --server-name "Epic FHIR Sandbox" --type api --set base-url:https://open-ic.epic.com --set hostname-verification-method:allow-all
+dsconfig create-external-server --server-name "Healthcare Demo PD" --type api --set base-url:https://int-docker.anyhealth-demo.ping-eng.com:1443 --set user-name:cn=administrator --set password:AADcp21yk8T5LCl1YsgeBUkbOzRQZ/yuZiE=
+dsconfig create-api-endpoint --endpoint-name "Cerner FHIR API" --set inbound-base-path:/cerner --set outbound-base-path:/dstu2/0b8a0111-e8e6-4c26-a91c-5069cbc6b1ca --set "api-server:Cerner FHIR Sandbox" --set service:CernerFHIR --set http-auth-evaluation-behavior:evaluate-and-discard --set "access-token-validator:Mock ATV"
+dsconfig create-api-endpoint --endpoint-name "Epic FHIR Sandbox" --set inbound-base-path:/epic --set outbound-base-path:/FHIR/api/FHIR/DSTU2 --set "api-server:Epic FHIR Sandbox" --set service:EpicFHIR --set http-auth-evaluation-behavior:evaluate-and-discard --set "access-token-validator:Mock ATV"
+dsconfig create-api-endpoint --endpoint-name "Patient Directory API" --set inbound-base-path:/portal --set outbound-base-path:/directory/v1 --set "api-server:Healthcare Demo PD" --set service:PatientPortal --set http-auth-evaluation-behavior:evaluate-and-replace --set "access-token-validator:Mock ATV"
+
+dsconfig create-external-server --server-name PAP --type policy --set base-url:http://int-dg.anyhealth-demo.ping-eng.com:8080 --set hostname-verification-method:allow-all --set x-user-id:symphonic --set x-decision-node:e51688ff-1dc9-4b6c-bb36-8af64d02e9d1 --set "x-branch:Default Policies"
+
+dsconfig create-access-token-validator --validator-name "Mock ATV" --type mock --set enabled:true
+
+dsconfig create-token-resource-lookup-method --validator-name "Mock ATV" --method-name "tokenOwner Lookup" --set scim-resource-type:Users --set 'match-filter:id eq "%sub%"' --set evaluation-order-index:10
+
+
+dsconfig set-policy-decision-service-prop --set pdp-mode:external --set policy-server:PAP --set decision-response-view:decision-tree --set decision-response-view:evaluated-entities --set decision-response-view:request
+
+dsconfig set-log-publisher-prop --publisher-name "Debug Trace Logger" --set enabled:true

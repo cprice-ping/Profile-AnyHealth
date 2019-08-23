@@ -1,0 +1,95 @@
+version: 1
+
+dn: ${USER_BASE_DN}
+objectClass: organization
+objectClass: top
+o: ${USER_BASE_DN}
+
+dn: ou=Consents,${USER_BASE_DN}
+objectClass: organizationalUnit
+objectClass: top
+ou: People
+description: The container for Consent records
+
+dn: ou=People,${USER_BASE_DN}
+objectClass: organizationalUnit
+objectClass: top
+ou: People
+description: The container for people; Patients, Persons, Practitioners
+
+dn: ou=Organizations,${USER_BASE_DN}
+objectClass: organizationalUnit
+objectClass: top
+ou: Organizations
+description: The container for healthcare organizations
+
+dn: ou=Groups,${USER_BASE_DN}
+objectClass: organizationalUnit
+objectClass: top
+ou: Groups
+description: The container for non-admin groups
+
+dn: ou=Administrative Groups,${USER_BASE_DN}
+objectClass: organizationalUnit
+objectClass: top
+ou: Administrative Groups
+description: The container for Admin groups
+
+dn: entryUUID=5be3c2ea-66ea-4b51-8c97-e9af0e89e74c,ou=Organizations,${USER_BASE_DN}
+objectClass: fhirOrganization
+objectClass: organization
+objectClass: top
+o: acmehealth
+businessCategory: healthcare org
+description: A Healthcare organization
+displayName: Acme Health Organization
+fhirAccountNumber: 1111111111
+fhirActive: TRUE
+fhirEntitlement: { "type":"implicit", "id":"urn:ping:entitlement:fhir:app:CSR", "value":[ "read", "search", "create", "modify" ] }
+fhirRole: { "type":"implicit", "id":"urn:ping:role:fhir:organization:admin", "value":[ "read", "search", "create", "modify" ] }
+
+dn: entryUUID=eadf9f4e-c198-4665-9339-1f34e379cf30,ou=Organizations,${USER_BASE_DN}
+objectClass: fhirOrganization
+objectClass: organization
+objectClass: top
+o: acmelabs
+displayName: Acme Labs
+fhirEntitlement: { "type":"implicit", "id":"urn:ping:entitlement:fhir:app:CSR", "value":[ "read", "search", "create", "modify" ] }
+fhirRole: { "type":"implicit", "id":"urn:ping:role:fhir:organization:admin", "value":[ "read", "search", "create", "modify" ] }
+
+dn: cn=admin,ou=Administrative Groups,${USER_BASE_DN}
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: admin
+uniqueMember: entryUUID=103341be-b937-47b2-9ea1-660468b5fc63,ou=People,${USER_BASE_DN}
+uniqueMember: cn=directory manager
+
+dn: cn=PFAdminGroup,ou=Administrative Groups,${USER_BASE_DN}
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: admin
+uniqueMember: uid=administrator,ou=People,${USER_BASE_DN}
+
+dn: cn=PFCryptoGroup,ou=Administrative Groups,${USER_BASE_DN}
+objectClass: top
+objectClass: groupOfNames
+cn: PFCryptoGroup
+member: uid=administrator,ou=people,${USER_BASE_DN}
+
+dn: cn=PFAuditorGroup,ou=Administrative Groups,${USER_BASE_DN}
+objectClass: top
+objectClass: groupOfNames
+cn: PFAuditorGroup
+member: uid=auditor,ou=people,${USER_BASE_DN}
+
+dn: cn=PFUserAdminGroup,ou=Administrative Groups,${USER_BASE_DN}
+objectClass: top
+objectClass: groupOfNames
+cn: PFUserAdminGroup
+member: uid=administrator,ou=people,${USER_BASE_DN}
+
+dn: ${USER_BASE_DN}
+changetype: modify
+add: aci
+aci: (targetattr!="userPassword")(version 3.0; acl "Allow self-read access to all user attributes except the password"; allow (read,search,compare) userdn="ldap:///self";)
+aci: (targetattr="*")(version 3.0; acl "Allow users to update their own entries"; allow (write) userdn="ldap:///self";)

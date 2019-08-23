@@ -1,0 +1,1779 @@
+{
+	"info": {
+		"_postman_id": "f04a98be-5282-48b1-904d-ce8739c2e960",
+		"name": "Healthcare DG Demo",
+		"description": "This set of calls is used to demonstrate DataGov's ability to perform fine-granined access to **any** REST API.\n\nAPIs that are being called in this set are:\n* PingDirectory REST API \\ Consent API\n* Epic FHIR Sandbox\n* Cerner FHIR Sandbox\n\nThings that are showed in this:\n\n* PingDirectory REST API\n  * Scope --> Attribute mapping\n  * Scope --> Method mapping\n  * User --> Record Ownership enforcement\n  * Preferences --> Filtered Results\n\n* FHIR APIs\n  * Consent --> Definition\n  * Consent --> Capture\n  * Consent --> Versioning\n  * Consent --> Revocation\n  * Consent --> Delegation\n  * Account Linking --> PD User to FHIR Systems\n\nThe demo is designed to be an example of a Patient Portal - with access to manipulate the User Profile, and access controls to various EMR Patient Records",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Consent API - Capture and Management",
+			"item": [
+				{
+					"name": "Consent Definitions",
+					"item": [
+						{
+							"name": "Get ALL Consent Definition(s)",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "2FederateM0re",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "cn=administrator",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{pd}}:1443/consent/v1/definitions",
+									"protocol": "https",
+									"host": [
+										"{{pd}}"
+									],
+									"port": "1443",
+									"path": [
+										"consent",
+										"v1",
+										"definitions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get EMR-Record Consent Definition",
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "2FederateM0re",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "cn=administrator",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{pd}}:1443/consent/v1/definitions/EMR-Access",
+									"protocol": "https",
+									"host": [
+										"{{pd}}"
+									],
+									"port": "1443",
+									"path": [
+										"consent",
+										"v1",
+										"definitions",
+										"EMR-Access"
+									]
+								},
+								"description": "This is the Consent Definition used to control access to the Medical Record on Epic *and* Cerner systems"
+							},
+							"response": []
+						},
+						{
+							"name": "Get EMR-Record Consent Definition - Localized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "3b025974-8729-4a17-aa37-bf80cf4bcdab",
+										"exec": [
+											"pm.test(\"Retrieved User by userID\", function () {",
+											"    pm.response.to.have.status(200);",
+											"    ",
+											"    var response = pm.response.json();",
+											"    console.log(response);",
+											"    pm.environment.set(\"consentDefVersion\", response._embedded.localizations[0].version);",
+											"    pm.environment.set(\"consentDataText\", response._embedded.localizations[0].dataText);",
+											"    pm.environment.set(\"consentDefPurpose\", response._embedded.localizations[0].purposeText);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "basic",
+									"basic": [
+										{
+											"key": "password",
+											"value": "2FederateM0re",
+											"type": "string"
+										},
+										{
+											"key": "username",
+											"value": "cn=administrator",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{pd}}:1443/consent/v1/definitions/EMR-Access/localizations",
+									"protocol": "https",
+									"host": [
+										"{{pd}}"
+									],
+									"port": "1443",
+									"path": [
+										"consent",
+										"v1",
+										"definitions",
+										"EMR-Access",
+										"localizations"
+									]
+								},
+								"description": "This is the localized language that the User will be presented with and consent to. \n\nThis call will store the latest information from the definition in the environment for use by the Create record call"
+							},
+							"response": []
+						}
+					],
+					"description": "Calls the User would need to retreive the proper Consent definition(s) for this action.\n\nThe Demo uses the **EMR-Access** one - this specific definition is used by DG to lookup the captured record of the owner of the PAtien record",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f76a517f-c3cc-4036-bf37-30389f863aae",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "df1e78b0-12a5-4c94-82ba-e07c6275a50f",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "User Consent Records",
+					"item": [
+						{
+							"name": "EMR-Access Consent - Sandra Beck",
+							"item": [
+								{
+									"name": "Get Consent Record(s)",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://{{pd}}:1443/consent/v1/consents",
+											"protocol": "https",
+											"host": [
+												"{{pd}}"
+											],
+											"port": "1443",
+											"path": [
+												"consent",
+												"v1",
+												"consents"
+											]
+										},
+										"description": "The call retrieves all the Consent records that the Bearer has - this result could be used to display a UI of all consents that have been granted over time and across channels"
+									},
+									"response": []
+								},
+								{
+									"name": "Get Latest EMR-Access Consent Record",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://{{pd}}:1443/consent/v1/consents/{{consentRecordId}}",
+											"protocol": "https",
+											"host": [
+												"{{pd}}"
+											],
+											"port": "1443",
+											"path": [
+												"consent",
+												"v1",
+												"consents",
+												"{{consentRecordId}}"
+											]
+										},
+										"description": "This retrieves the last EMR-Access consent record that was created (the Create call stores the recordId in the environment)"
+									},
+									"response": []
+								},
+								{
+									"name": "Create EMR-Access Consent",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"id": "ab810e3f-46d1-4aeb-af67-bcba9ac9fbe9",
+												"exec": [
+													"pm.test(\"Retrieved User by userID\", function () {",
+													"    pm.response.to.have.status(201);",
+													"    ",
+													"    var response = pm.response.json();",
+													"    pm.environment.set(\"consentRecordId\", response.id);",
+													"});"
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "7ebc9b8a-587d-4d7d-9ded-5c75c1106971",
+												"exec": [
+													"var moment = require('moment');",
+													"",
+													"// Generate current timestamp & 30 day expiration",
+													"pm.variables.set(\"timestamp\", moment());",
+													"pm.variables.set(\"expires\", moment().add(30, \"days\"));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"status\": \"accepted\",\n  \"audience\": \"AnyHealth-EMR\",\n  \"definition\": {\n    \"id\": \"EMR-Access\",\n    \"version\": \"{{consentDefVersion}}\",\n    \"locale\": \"en\"\n  },\n  \"dataText\": \"{{consentDataText}}\",\n  \"purposeText\": \"{{consentDefPurpose}}\",\n  \"data\": {\n     \"implicit\": [ \n     \t{ \n     \t\t\"relationship\": \"physician\", \n     \t\t\"provider\": \"EpicFHIR\", \n     \t\t\"identifier\":\"1eaed605-c824-477a-a2ce-9c2a160c170c\", \n     \t\t\"timestamp\": \"{{timestamp}}\",\n     \t\t\"expires\": \"{{expires}}\"\n \t\t} ]\n  },\n  \"consentContext\": {\n\t  \"captureMethod\": \"PatientPortal Web\",\n\t  \"subject\": {\n\t    \"userAgent\": \"Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B367 Safari/531.21.10\",\n\t    \"ipAddress\": \"10.1.0.89\"\n\t  },\n\t  \"authorizationService\": {\n\t    \"name\": \"anyHealth\",\n\t    \"client_id\": \"PatientPortal\"\n\t  }\n\t}\n}"
+										},
+										"url": {
+											"raw": "https://{{pd}}:1443/consent/v1/consents",
+											"protocol": "https",
+											"host": [
+												"{{pd}}"
+											],
+											"port": "1443",
+											"path": [
+												"consent",
+												"v1",
+												"consents"
+											]
+										},
+										"description": "This call will create a new EHR-Access consent call - pulling data that was stored from the definition localization.\n\nThis example includes a `data` element that DG will use in a decision as to who can see the Patient record. This element is specific to this use case - the `data` attribute can contain anything.\n\nThe example shown here is to provide Delegated Access for the User's Doctor to the Patient information stored in the Epic FHIR endpoint - this is an example of granular Consent control"
+									},
+									"response": []
+								},
+								{
+									"name": "Modify EMR-Access Record - granular Delegated consent",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "b064a741-5146-4af2-acd6-9e90b9a07dd9",
+												"exec": [
+													"var moment = require('moment');",
+													"",
+													"// Generate current timestamp & 30 day expiration",
+													"pm.variables.set(\"timestamp\", moment());",
+													"pm.variables.set(\"expires\", moment().add(30, \"days\"));"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"data\": {\n     \"implicit\": [ \n     \t{ \"relationship\": \"physician\", \"provider\": \"EpicFHIR\", \"identifier\":\"1eaed605-c824-477a-a2ce-9c2a160c170c\",\t\"timestamp\": \"{{timestamp}}\", \"expires\": \"{{expires}}\" },\n     \t{ \"relationship\": \"spouse\", \"provider\": \"EpicFHIR\", \"identifier\":\"d205f799-210f-4036-8761-bc3d281239aa\", \"timestamp\": \"{{timestamp}}\", \"expires\": \"{{expires}}\" },\n      \t{ \"relationship\": \"physician\", \"provider\": \"CernerFHIR\", \"identifier\":\"1eaed605-c824-477a-a2ce-9c2a160c170c\", \"timestamp\": \"{{timestamp}}\",\"expires\": \"{{expires}}\" }\n     \t]\n  }\n}"
+										},
+										"url": {
+											"raw": "https://{{pd}}:1443/consent/v1/consents/{{consentRecordId}}",
+											"protocol": "https",
+											"host": [
+												"{{pd}}"
+											],
+											"port": "1443",
+											"path": [
+												"consent",
+												"v1",
+												"consents",
+												"{{consentRecordId}}"
+											]
+										},
+										"description": "In this demo, the `data` element is used to provide granular delegation into the FHIR APIs that are being used."
+									},
+									"response": []
+								},
+								{
+									"name": "Modify EMR-Access Record - Change Status",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n\t\"status\": \"revoked\"\n}"
+										},
+										"url": {
+											"raw": "https://{{pd}}:1443/consent/v1/consents/{{consentRecordId}}",
+											"protocol": "https",
+											"host": [
+												"{{pd}}"
+											],
+											"port": "1443",
+											"path": [
+												"consent",
+												"v1",
+												"consents",
+												"{{consentRecordId}}"
+											]
+										},
+										"description": "This call allows you to modify the `status` of the record - enabling global \\ coarse-grained changes to the User's consent"
+									},
+									"response": []
+								},
+								{
+									"name": "Modify EMR-Access Record - Allow Specific Record Access",
+									"request": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"data\": {\n     \"implicit\":  [\n       { \"relationship\": \"physician\", \"identifier\":\"cdabf364-2bda-4dfb-b6da-ec109c20768d\" },\n       { \"relationship\": \"spouse\", \"identifier\":\"e0d919be-9f1d-4145-b1eb-b80a6b35346e\"}\n        ],\n      \"explicit\": [\n        { \"relationship\": \"specialist\", \"identifier\": \"{{identifier}}\", \"resourceType\": \"{{fhirResourceType}}\", \"recordAccess\": \"{{fhirRecordId}}\"}\n        ]\n  }\n}"
+										},
+										"url": {
+											"raw": "https://{{pd}}:1443/consent/v1/consents/{{consentRecordId}}",
+											"protocol": "https",
+											"host": [
+												"{{pd}}"
+											],
+											"port": "1443",
+											"path": [
+												"consent",
+												"v1",
+												"consents",
+												"{{consentRecordId}}"
+											]
+										},
+										"description": "This call shows manipulating the `data` element with different data. The element is a JSON attribute that can contain any JSON object"
+									},
+									"response": []
+								},
+								{
+									"name": "Delete Consent record",
+									"request": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Content-Type",
+												"name": "Content-Type",
+												"type": "text",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": {
+											"raw": "https://{{pd}}:1443/consent/v1/consents/{{consentRecordId}}",
+											"protocol": "https",
+											"host": [
+												"{{pd}}"
+											],
+											"port": "1443",
+											"path": [
+												"consent",
+												"v1",
+												"consents",
+												"{{consentRecordId}}"
+											]
+										},
+										"description": "This call shows a Record DELETE request.\n\nNote: The call should fail as it's using an Unprivileged scope in the Bearer token. \n\nBy restricting Users from deleting their own records it makes an immutable trail of current and prior consents possible to be retrieved"
+									},
+									"response": []
+								}
+							],
+							"description": "These are the Consent API calls that are made by the User.\n\nThe localized language is delivered to the client from the Definition calls and presented in a UI.\n\nThe ownership of the record is defined in the Bearer token used in the calls - the `sub` field is matched to an underlying PD User with the `subjectDN` and `actorDN` fields being automatically populated.\n\nThese calls use the `pd:consents:unpriv` scope that has been defined on the Consent service for Unpriviledged (User) requests\n\nHere is a sample Bearer token:\n\n{ \"iss\": \"PatientPortal\", \"aud\": \"ConsentAPI\", \"client_id\": \"PatientPortal\", \"sub\": \"ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e\", \"active\": true, \"scope\": \"pd:consents:unpriv\" }",
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{ \"iss\": \"PatientPortal\", \"aud\": \"ConsentAPI\", \"client_id\": \"PatientPortal\", \"sub\": \"ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e\", \"active\": true, \"scope\": \"pd:consents:unpriv\" }",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "b3215dc3-18be-4214-9596-e1b105db45f2",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "1476644c-d2ac-4515-bf95-3baad5598c7c",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"_postman_isSubFolder": true
+						}
+					],
+					"description": "These calls are the User --> Consent Capture calls.\n\nThe User is defined in the Bearer token that is used with the calls and should contain the entryUUID in the `sub` claim.",
+					"auth": {
+						"type": "noauth"
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "89580c35-4fc1-4494-bea1-172c81ce6c99",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "799673a4-5729-4768-8636-b86288ef5335",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "These calls are used to gather the Consent Definition(s) and to capture the User's consent to them.\n\nAll calls are made **as** the User - using an Unprivilidged Scope (`pd:consents:unpriv`) on the Bearer token. These calls are made directly to the Consent API on PingDirectory ",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c27d0128-5529-4e25-b087-3ecb9d813595",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "4f35c30c-be63-464e-b35c-8d04e6c345b6",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Portal \\ FHIR API Calls",
+			"item": [
+				{
+					"name": "Patient Portal",
+					"item": [
+						{
+							"name": "Direct Calls",
+							"item": [
+								{
+									"name": "Communication Options",
+									"item": [
+										{
+											"name": "Get My Communication Options",
+											"protocolProfileBehavior": {
+												"disableBodyPruning": true
+											},
+											"request": {
+												"auth": {
+													"type": "basic",
+													"basic": [
+														{
+															"key": "password",
+															"value": "2FederateM0re",
+															"type": "string"
+														},
+														{
+															"key": "username",
+															"value": "cn=administrator",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [
+													{
+														"key": "Content-Type",
+														"name": "Content-Type",
+														"type": "text",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": ""
+												},
+												"url": {
+													"raw": "https://{{pd}}:1443/directory/v1/entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org?includeAttributes=fhirCommOpts",
+													"protocol": "https",
+													"host": [
+														"{{pd}}"
+													],
+													"port": "1443",
+													"path": [
+														"directory",
+														"v1",
+														"entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org"
+													],
+													"query": [
+														{
+															"key": "includeAttributes",
+															"value": "fhirCommOpts"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Modify My fhirCommOpts",
+											"request": {
+												"auth": {
+													"type": "basic",
+													"basic": [
+														{
+															"key": "password",
+															"value": "2FederateM0re",
+															"type": "string"
+														},
+														{
+															"key": "username",
+															"value": "cn=administrator",
+															"type": "string"
+														}
+													]
+												},
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"name": "Content-Type",
+														"type": "text",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n\t\"fhirCommOpts\": [\n        {\n            \"type\": \"preference\",\n            \"id\": \"urn:ciam:Opt:EmailMarketing\",\n            \"destination\": \"sbeck@mailinator.com\",\n            \"destinationType\": \"email\",\n            \"polarityOpt\": \"out\",\n            \"timeStamp\": \"2019-05-03T13:10:22Z\",\n            \"collector\": \"urn:pingidentity:App:Mobile:3\",\n            \"frequency\": \"weekly;Friday\"\n        },\n        {\n            \"type\": \"preference\",\n            \"id\": \"urn:ciam:Opt:textAlerts\",\n            \"destination\": \"+1 555 555 5555\",\n            \"destinationType\": \"sms\",\n            \"polarityOpt\": \"in\",\n            \"timeStamp\": \"2019-05-03T13:10:22Z\",\n            \"collector\": \"urn:pingidentity:App:Portal\",\n            \"frequency\": \"asNeeded\"\n        }\n    ]\n}"
+												},
+												"url": {
+													"raw": "https://{{pd}}:1443/directory/v1/entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org",
+													"protocol": "https",
+													"host": [
+														"{{pd}}"
+													],
+													"port": "1443",
+													"path": [
+														"directory",
+														"v1",
+														"entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Direct - Get commOpts",
+											"request": {
+												"auth": {
+													"type": "basic",
+													"basic": [
+														{
+															"key": "password",
+															"value": "2FederateM0re",
+															"type": "string"
+														},
+														{
+															"key": "username",
+															"value": "cn=administrator",
+															"type": "string"
+														}
+													]
+												},
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "https://{{pd}}:1443/directory/v1/ou=people,o=acmehealth.org/subtree?searchScope=wholeSubtree&limit=1000&filter=fhirCommOpts pr",
+													"protocol": "https",
+													"host": [
+														"{{pd}}"
+													],
+													"port": "1443",
+													"path": [
+														"directory",
+														"v1",
+														"ou=people,o=acmehealth.org",
+														"subtree"
+													],
+													"query": [
+														{
+															"key": "searchScope",
+															"value": "wholeSubtree"
+														},
+														{
+															"key": "limit",
+															"value": "1000"
+														},
+														{
+															"key": "filter",
+															"value": "fhirCommOpts pr"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"_postman_isSubFolder": true
+								},
+								{
+									"name": "Get My User Details",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{ \"iss\": \"PatientPortal\", \"aud\": \"PatientPortal\", \"client_id\": \"PatientPortal\", \"sub\": \"ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e\", \"active\": true, \"scope\": \"pd:dir:access\" }",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://{{pd}}:1443/directory/v1/Me",
+											"protocol": "https",
+											"host": [
+												"{{pd}}"
+											],
+											"port": "1443",
+											"path": [
+												"directory",
+												"v1",
+												"Me"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "Calls that go directly to PD",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "2ce13e9f-ed6a-45e1-8e3a-5c0fdf6afdf4",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "b8761ccc-59b3-4956-a311-23c4905ed916",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Communications",
+							"item": [
+								{
+									"name": "DG - Get commOpts",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{ \"iss\": \"PatientPortal\", \"aud\": \"PatientPortal\", \"client_id\": \"Marketing\", \"active\": true, \"scope\": \"pd:dir:access getCommsOpt\" }",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://{{dg}}:8443/portal/ou=people,o=acmehealth.org/subtree?searchScope=wholeSubtree&limit=1000&filter=fhirCommOpts pr",
+											"protocol": "https",
+											"host": [
+												"{{dg}}"
+											],
+											"port": "8443",
+											"path": [
+												"portal",
+												"ou=people,o=acmehealth.org",
+												"subtree"
+											],
+											"query": [
+												{
+													"key": "searchScope",
+													"value": "wholeSubtree"
+												},
+												{
+													"key": "limit",
+													"value": "1000"
+												},
+												{
+													"key": "filter",
+													"value": "fhirCommOpts pr"
+												}
+											]
+										},
+										"description": "This call shows a Marketing app making a call to the PD DirAPI in order to retrieve the Communication Preferences that a User Profile has stored in the `fhirCommOpts` attribute.\n\nDatGov is performing a JSONPath filter on:\n* `provider`\n* `polarityOpt`\n\nAnd is also restricting the response to just the `fhirCommOpts` value(s)"
+									},
+									"response": []
+								}
+							],
+							"description": "This is a call made by the service that is responsible for sending out emails.\n\nDataGov is filtering the response based on the `client_id` of the request, as well as whether the User has `polarityOpt == \"in\"` in the `fhirCommOpts` attribute.\n\nOnly those values that match will be presented - and only the `fhirCommOpts` attribute is returned to the request",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "d3879963-1bbe-4a13-938e-7d0446ea05a7",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "62aacf62-392a-462b-a239-ce3cd992f9ff",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "User Profile (Sandra Beck)",
+							"item": [
+								{
+									"name": "Manage my Communication Options",
+									"item": [
+										{
+											"name": "Get my Communication Options",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "https://{{dg}}:8443/portal/entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org?includeAttributes=fhirCommOpts,entryUUID",
+													"protocol": "https",
+													"host": [
+														"{{dg}}"
+													],
+													"port": "8443",
+													"path": [
+														"portal",
+														"entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org"
+													],
+													"query": [
+														{
+															"key": "includeAttributes",
+															"value": "fhirCommOpts,entryUUID"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Update my fhirCommOpts",
+											"request": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "Content-Type",
+														"name": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n    \"fhirCommOpts\": [\n        {\n            \"type\": \"preference\",\n            \"id\": \"urn:ciam:Opt:EmailMarketing\",\n            \"destination\": \"sbeck@mailinator.com\",\n            \"destinationType\": \"email\",\n            \"polarityOpt\": \"out\",\n            \"timeStamp\": \"2019-05-03T13:10:22Z\",\n            \"collector\": \"urn:pingidentity:App:Mobile:3\",\n            \"frequency\": \"weekly;Friday\"\n        }\n    ]\n}"
+												},
+												"url": {
+													"raw": "https://{{dg}}:8443/portal/entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org",
+													"protocol": "https",
+													"host": [
+														"{{dg}}"
+													],
+													"port": "8443",
+													"path": [
+														"portal",
+														"entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org"
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"_postman_isSubFolder": true
+								},
+								{
+									"name": "Get my User Profile",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://{{dg}}:8443/portal/entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org",
+											"protocol": "https",
+											"host": [
+												"{{dg}}"
+											],
+											"port": "8443",
+											"path": [
+												"portal",
+												"entryuuid=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=people,o=acmehealth.org"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"description": "These calls are used to get infomation about the User for the Portal to present\n\nDataGov is enforcing:\n* Scopes are needed to access attributes\n* Scopes are needed to modify attributes\n* Modify can only be done by the User that owns the Profile\n\nChanges to the `fhirCommOpts` value will be reflected in the *Communications* call",
+							"auth": {
+								"type": "bearer",
+								"bearer": [
+									{
+										"key": "token",
+										"value": "{ \"iss\": \"PatientPortal\", \"aud\": \"PatientPortal\", \"client_id\": \"PatientPortal\", \"sub\": \"ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e\", \"active\": true, \"scope\": \"pd:dir:access getUserProfile modifyCommOpts\" }",
+										"type": "string"
+									}
+								]
+							},
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "3e849b4d-cfa8-49cd-bd9c-1a00254d738a",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "a66ea4f7-d5a1-46ee-9e1f-da1a405d392a",
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							],
+							"_postman_isSubFolder": true
+						}
+					],
+					"description": "These calls would be made by the Patient Portal and associated services to the PD Dir API to get information about the User(s)",
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{ \"iss\": \"KP Token\", \"aud\": \"PatientPortal\", \"client_id\": \"KPMembers\", \"sub\": \"1eaed605-c824-477a-a2ce-9c2a160c170c\", \"active\": true, \"scope\": \"pd:dir:access\" }",
+								"type": "string"
+							}
+						]
+					},
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ab438141-4caf-4494-8eb8-861cff0787f5",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "236da420-3179-4e49-964c-8ef92527584d",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Patient Medical Record(s)",
+					"item": [
+						{
+							"name": "Epic EMR Calls",
+							"item": [
+								{
+									"name": "Direct",
+									"item": [
+										{
+											"name": "Direct - Get Patient",
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": {
+													"raw": "https://open-ic.epic.com/FHIR/api/FHIR/DSTU2/Patient/TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B",
+													"protocol": "https",
+													"host": [
+														"open-ic",
+														"epic",
+														"com"
+													],
+													"path": [
+														"FHIR",
+														"api",
+														"FHIR",
+														"DSTU2",
+														"Patient",
+														"TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B"
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Direct - Get Patient Document",
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": {
+													"raw": "https://open-ic.epic.com/FHIR/api/FHIR/DSTU2/DiagnosticReport?patient=TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B",
+													"protocol": "https",
+													"host": [
+														"open-ic",
+														"epic",
+														"com"
+													],
+													"path": [
+														"FHIR",
+														"api",
+														"FHIR",
+														"DSTU2",
+														"DiagnosticReport"
+													],
+													"query": [
+														{
+															"key": "patient",
+															"value": "TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Direct - Get Patient - Condition",
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": {
+													"raw": "https://open-ic.epic.com/FHIR/api/FHIR/DSTU2/Condition?patient=TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B",
+													"protocol": "https",
+													"host": [
+														"open-ic",
+														"epic",
+														"com"
+													],
+													"path": [
+														"FHIR",
+														"api",
+														"FHIR",
+														"DSTU2",
+														"Condition"
+													],
+													"query": [
+														{
+															"key": "patient",
+															"value": "TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"_postman_isSubFolder": true
+								},
+								{
+									"name": "DataGov",
+									"item": [
+										{
+											"name": "User - SBeck (Self)",
+											"item": [
+												{
+													"name": "Get Patient (SBeck)",
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"type": "text",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "https://{{dg}}:8443/epic/Patient/TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B",
+															"protocol": "https",
+															"host": [
+																"{{dg}}"
+															],
+															"port": "8443",
+															"path": [
+																"epic",
+																"Patient",
+																"TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B"
+															]
+														}
+													},
+													"response": []
+												},
+												{
+													"name": "Get Patient (JBeck - Spouse)",
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"type": "text",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "https://{{dg}}:8443/epic/Patient/Tbt3KuCY0B5PSrJvCu2j-PlK.aiHsu2xUjUM8bWpetXoB",
+															"protocol": "https",
+															"host": [
+																"{{dg}}"
+															],
+															"port": "8443",
+															"path": [
+																"epic",
+																"Patient",
+																"Tbt3KuCY0B5PSrJvCu2j-PlK.aiHsu2xUjUM8bWpetXoB"
+															]
+														}
+													},
+													"response": []
+												}
+											],
+											"auth": {
+												"type": "bearer",
+												"bearer": [
+													{
+														"key": "token",
+														"value": "{ \"iss\": \"AnyHealth\", \"aud\": \"EpicFHIR\", \"client_id\": \"PatientPortal\", \"sub\": \"ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e\", \"active\": true, \"scope\": \"pd:consents:unpriv\" }",
+														"type": "string"
+													}
+												]
+											},
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"id": "702ff385-baf8-4b82-b04b-5d15f74f9005",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"id": "3d2275eb-a92c-4253-bfeb-c32b4e9a64cd",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												}
+											],
+											"_postman_isSubFolder": true
+										},
+										{
+											"name": "User - JBeck (Spouse)",
+											"item": [
+												{
+													"name": "Get Patient (SBeck)",
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"type": "text",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "https://{{dg}}:8443/epic/Patient/TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B",
+															"protocol": "https",
+															"host": [
+																"{{dg}}"
+															],
+															"port": "8443",
+															"path": [
+																"epic",
+																"Patient",
+																"TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B"
+															]
+														}
+													},
+													"response": []
+												}
+											],
+											"auth": {
+												"type": "bearer",
+												"bearer": [
+													{
+														"key": "token",
+														"value": "{ \"iss\": \"KP Token\", \"aud\": \"EpicFHIR\", \"client_id\": \"KPMembers\", \"sub\": \"d205f799-210f-4036-8761-bc3d281239aa\", \"active\": true, \"scope\": \"pd:consents:unpriv\" }",
+														"type": "string"
+													}
+												]
+											},
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"id": "702ff385-baf8-4b82-b04b-5d15f74f9005",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"id": "3d2275eb-a92c-4253-bfeb-c32b4e9a64cd",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												}
+											],
+											"_postman_isSubFolder": true
+										},
+										{
+											"name": "User - Physician (GP)",
+											"item": [
+												{
+													"name": "Get Patient (SBeck)",
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"type": "text",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "https://{{dg}}:8443/epic/Patient/TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B",
+															"protocol": "https",
+															"host": [
+																"{{dg}}"
+															],
+															"port": "8443",
+															"path": [
+																"epic",
+																"Patient",
+																"TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B"
+															]
+														}
+													},
+													"response": []
+												}
+											],
+											"auth": {
+												"type": "bearer",
+												"bearer": [
+													{
+														"key": "token",
+														"value": "{ \"iss\": \"KP Token\", \"aud\": \"EpicFHIR\", \"client_id\": \"KPMembers\", \"sub\": \"1eaed605-c824-477a-a2ce-9c2a160c170c\", \"active\": true, \"scope\": \"pd:consents:unpriv\" }",
+														"type": "string"
+													}
+												]
+											},
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"id": "702ff385-baf8-4b82-b04b-5d15f74f9005",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"id": "3d2275eb-a92c-4253-bfeb-c32b4e9a64cd",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												}
+											],
+											"_postman_isSubFolder": true
+										}
+									],
+									"auth": {
+										"type": "noauth"
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "b4ab8e7c-2ed3-44f3-a9bf-dc61b0bec27d",
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "d9c452f5-3b2c-429c-8a64-aad486b0c230",
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										}
+									],
+									"_postman_isSubFolder": true
+								}
+							],
+							"_postman_isSubFolder": true
+						},
+						{
+							"name": "Cerner EMR Calls",
+							"item": [
+								{
+									"name": "Direct",
+									"item": [
+										{
+											"name": "Direct - Get Patient",
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": {
+													"raw": "https://fhir-open.sandboxcerner.com/dstu2/0b8a0111-e8e6-4c26-a91c-5069cbc6b1ca/Patient?_id=4342009",
+													"protocol": "https",
+													"host": [
+														"fhir-open",
+														"sandboxcerner",
+														"com"
+													],
+													"path": [
+														"dstu2",
+														"0b8a0111-e8e6-4c26-a91c-5069cbc6b1ca",
+														"Patient"
+													],
+													"query": [
+														{
+															"key": "_id",
+															"value": "4342009"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Direct - Get Patient Document",
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": {
+													"raw": "https://open-ic.epic.com/FHIR/api/FHIR/DSTU2/DiagnosticReport?patient=TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B",
+													"protocol": "https",
+													"host": [
+														"open-ic",
+														"epic",
+														"com"
+													],
+													"path": [
+														"FHIR",
+														"api",
+														"FHIR",
+														"DSTU2",
+														"DiagnosticReport"
+													],
+													"query": [
+														{
+															"key": "patient",
+															"value": "TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B"
+														}
+													]
+												}
+											},
+											"response": []
+										},
+										{
+											"name": "Direct - Get Patient - Condition",
+											"request": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"url": {
+													"raw": "https://open-ic.epic.com/FHIR/api/FHIR/DSTU2/Condition?patient=TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B",
+													"protocol": "https",
+													"host": [
+														"open-ic",
+														"epic",
+														"com"
+													],
+													"path": [
+														"FHIR",
+														"api",
+														"FHIR",
+														"DSTU2",
+														"Condition"
+													],
+													"query": [
+														{
+															"key": "patient",
+															"value": "TUKRxL29bxE9lyAcdTIyrWC6Ln5gZ-z7CLr2r-2SY964B"
+														}
+													]
+												}
+											},
+											"response": []
+										}
+									],
+									"_postman_isSubFolder": true
+								},
+								{
+									"name": "DataGov",
+									"item": [
+										{
+											"name": "User - SBeck (Self)",
+											"item": [
+												{
+													"name": "Get Patient (SBeck)",
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"type": "text",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "https://{{dg}}:8443/cerner/Patient/4342009",
+															"protocol": "https",
+															"host": [
+																"{{dg}}"
+															],
+															"port": "8443",
+															"path": [
+																"cerner",
+																"Patient",
+																"4342009"
+															]
+														}
+													},
+													"response": []
+												}
+											],
+											"auth": {
+												"type": "bearer",
+												"bearer": [
+													{
+														"key": "token",
+														"value": "{ \"iss\": \"KP Token\", \"aud\": \"CernerFHIR\", \"client_id\": \"KPMembers\", \"sub\": \"ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e\", \"active\": true, \"scope\": \"pd:consents:unpriv\" }",
+														"type": "string"
+													}
+												]
+											},
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"id": "702ff385-baf8-4b82-b04b-5d15f74f9005",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"id": "3d2275eb-a92c-4253-bfeb-c32b4e9a64cd",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												}
+											],
+											"_postman_isSubFolder": true
+										},
+										{
+											"name": "User - JBeck (Spouse)",
+											"item": [
+												{
+													"name": "Get Patient (SBeck)",
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"type": "text",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "https://{{dg}}:8443/cerner/Patient/4342009",
+															"protocol": "https",
+															"host": [
+																"{{dg}}"
+															],
+															"port": "8443",
+															"path": [
+																"cerner",
+																"Patient",
+																"4342009"
+															]
+														}
+													},
+													"response": []
+												}
+											],
+											"auth": {
+												"type": "bearer",
+												"bearer": [
+													{
+														"key": "token",
+														"value": "{ \"iss\": \"KP Token\", \"aud\": \"CernerFHIR\", \"client_id\": \"KPMembers\", \"sub\": \"d205f799-210f-4036-8761-bc3d281239aa\", \"active\": true, \"scope\": \"pd:consents:unpriv\" }",
+														"type": "string"
+													}
+												]
+											},
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"id": "702ff385-baf8-4b82-b04b-5d15f74f9005",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"id": "3d2275eb-a92c-4253-bfeb-c32b4e9a64cd",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												}
+											],
+											"_postman_isSubFolder": true
+										},
+										{
+											"name": "User - Physician (GP)",
+											"item": [
+												{
+													"name": "Get Patient (SBeck)",
+													"request": {
+														"method": "GET",
+														"header": [
+															{
+																"key": "Accept",
+																"type": "text",
+																"value": "application/json"
+															}
+														],
+														"url": {
+															"raw": "https://{{dg}}:8443/cerner/Patient/4342009",
+															"protocol": "https",
+															"host": [
+																"{{dg}}"
+															],
+															"port": "8443",
+															"path": [
+																"cerner",
+																"Patient",
+																"4342009"
+															]
+														}
+													},
+													"response": []
+												}
+											],
+											"auth": {
+												"type": "bearer",
+												"bearer": [
+													{
+														"key": "token",
+														"value": "{ \"iss\": \"KP Token\", \"aud\": \"CernerFHIR\", \"client_id\": \"KPMembers\", \"sub\": \"1eaed605-c824-477a-a2ce-9c2a160c170c\", \"active\": true, \"scope\": \"pd:consents:unpriv\" }",
+														"type": "string"
+													}
+												]
+											},
+											"event": [
+												{
+													"listen": "prerequest",
+													"script": {
+														"id": "702ff385-baf8-4b82-b04b-5d15f74f9005",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												},
+												{
+													"listen": "test",
+													"script": {
+														"id": "3d2275eb-a92c-4253-bfeb-c32b4e9a64cd",
+														"type": "text/javascript",
+														"exec": [
+															""
+														]
+													}
+												}
+											],
+											"_postman_isSubFolder": true
+										}
+									],
+									"auth": {
+										"type": "noauth"
+									},
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"id": "b4ab8e7c-2ed3-44f3-a9bf-dc61b0bec27d",
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"id": "d9c452f5-3b2c-429c-8a64-aad486b0c230",
+												"type": "text/javascript",
+												"exec": [
+													""
+												]
+											}
+										}
+									],
+									"_postman_isSubFolder": true
+								}
+							],
+							"_postman_isSubFolder": true
+						}
+					],
+					"description": "These are calls made to the specific FHIR API endpoints.\n\nWhen the FHIR API call is sent via DG, a number of checks will be performed in real-time:\n\n* DG retrieves the `patientId` from the API response\n* DG queries the PD Users (Dir API) for that `patientId` (this is stored on the User `fhirIdentifier` attribute)\n\nIf the tokenOwner `sub` value is **not** the PD User `entryUUID`:\n\n* DG uses the `entryUUID` of the matched PD User to retrieve the EMR-Access consent record (Consent API)\n* DG checks that the `status` is \"accepted\"\n* DG checks that the `version` (record version) matches the `currentVersion` (definition version)\n* DG parses the `data` element of the record using the `provider` value that matches the Bearer token `aud` claim\n* DG checks that the tokenOwner `sub` (i.e the User accessing the Patient's record) is in the list of `identifier` on the consent record\n\nIf all this returns `true` - then the access is allowed and the record presented back to the User.\n\nThe returned record is also filtered based on the relationship between the User and the Patient\n\n* Patient can see all the data in the record\n* Spouse can see a slighted reduced attribute set\n* Physician can see a limited set of attributes\n\n\n \n\n",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "13800756-f2c4-41b5-b72d-c3534fee1c31",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "f1c876d4-52ec-4b75-a7bd-3a876c21a616",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "These calls are the actual API calls that are being protected by DG.\n\n*Direct Call* folders show the non-protected calls \\ results",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59580bac-42e1-4328-a4c4-0475fd2abaa6",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1d43f282-e91b-4be8-8bdc-473f87ca3525",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "8190b7ca-145b-494c-918a-66e7c45ceb3f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c2cce50f-c84d-488e-af5d-d3b76645e9d1",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

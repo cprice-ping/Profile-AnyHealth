@@ -1,0 +1,2 @@
+dsconfig create-access-token-validator --validator-name "Mock ATV" --type mock --set enabled:true
+dsconfig create-token-resource-lookup-method --validator-name "Mock ATV" --method-name "tokenOwner Lookup" --set scim-resource-type:Users --set 'match-filter:id eq "%sub%"' --set evaluation-order-index:10

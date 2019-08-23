@@ -1,0 +1,8 @@
+dn: cn=schema
+objectClass: top
+objectClass: ldapSubentry
+objectClass: subschema
+cn: schema
+attributeTypes: ( fhirProfileVisit-OID NAME 'fhirProfileVisit' USAGE userApplications )
+attributeTypes: ( fhirDeviceFingerprint-OID NAME 'fhirDeviceFingerprint' USAGE userApplications )
+objectClasses: ( fhirProfile-OID NAME 'fhirProfile' DESC 'Aux class to contain the custom attributes needed for Progressive Profiling' AUXILIARY MAY fhirDeviceFingerprint )
