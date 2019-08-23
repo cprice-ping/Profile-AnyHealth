@@ -30,11 +30,11 @@ Here is an Reference Architecture for this demo environment:
 The Server Profile for this demo consists of:
 * PingFederate - Used to Authenticate User and provide Bearer tokens (Note: the default DG ATV is a MockATV - no PF required)
 * PingDirectory - Used to store the Portal User information, along with Users and Consent Definitions for this demo
-* [Coming soon] PingDataGovernance - The API proxy that's enforcing the Consent request
+* PingDataGovernance - The API proxy that's enforcing the Consent request
 * [Coming soon] DG Policy Admin Point - Used to show the policies that are defined
 
 To implement this demo, download the `docker-compose.yaml` file and execute a `docker-compose up` command.
 
-Note: at the moment - PingDataGovernance \ PAP is not available in Docker and needs to be manually installed
+Note: at the moment - DG PAP is not available in Docker and needs to be manually installed
 
 A Postman collection is also included to demonstrate the ConsentAPI and DG-proxied FHIR calls
