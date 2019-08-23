@@ -1,3 +1,5 @@
+
+
 dsconfig create-identity-mapper --mapper-name entryUUIDMatch --type exact-match --set enabled:true --set match-attribute:entryUUID --set match-base-dn:ou=people,${USER_BASE_DN}
 
 dsconfig create-access-token-validator --validator-name "Mock ATV" --type mock --set identity-mapper:entryUUIDMatch --set enabled:true

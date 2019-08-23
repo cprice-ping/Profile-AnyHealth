@@ -23,8 +23,9 @@ dsconfig create-root-dn-user \
 dsconfig set-trust-manager-provider-prop \
     --provider-name "Blind Trust" \
     --set enabled:true
+
 dsconfig create-external-server \
     --server-name PingFederate \
     --type http \
-    --set base-url:https://pingfederate:9031 \
+    --set base-url:https://pf:9031 \
     --set "trust-manager-provider:Blind Trust"
