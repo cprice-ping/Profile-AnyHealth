@@ -1,5 +1,10 @@
 version: 1
 
+dn: ou=Organizations,${USER_BASE_DN}
+objectClass: top
+objectClass: organizationalUnit
+ou: Organizations
+
 dn: entryUUID=d205f799-210f-4036-8761-bc3d281239aa,ou=People,${USER_BASE_DN}
 objectClass: fhirPatient
 objectClass: pf-connected-identities
