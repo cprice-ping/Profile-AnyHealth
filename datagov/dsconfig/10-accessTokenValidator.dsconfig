@@ -1,5 +1,5 @@
 dsconfig set-trust-manager-provider-prop --provider-name "Blind Trust"  --set enabled:true
-dsconfig create-external-server --server-name PingFed --type http --set base-url:https://pf:9031 --set hostname-verification-method:allow-all --set "trust-manager-provider:Blind Trust"
+dsconfig create-external-server --server-name PingFed --type http --set base-url:https://pingfederate:9031 --set hostname-verification-method:allow-all --set "trust-manager-provider:Blind Trust"
 
 dsconfig create-access-token-validator --validator-name "Mock ATV" --type mock --set enabled:true
 dsconfig create-token-resource-lookup-method --validator-name "Mock ATV" --method-name "tokenOwner Lookup" --set scim-resource-type:Users --set 'match-filter:id eq "%sub%"' --set evaluation-order-index:10

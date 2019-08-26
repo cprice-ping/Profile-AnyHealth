@@ -76,15 +76,14 @@ fhirTermsOfService: { "type":"tos", "id":"urn:ping:fhir:tos:user:3", "timeSt
 fhirTimeZone: EST
 fhirType: patient
 fhirVisit: { "type":"page", "id":"urn:ping:fhir:visit:page", "timestamp":"20
- 171219012052Z", "value":"http://Anyhealth.com/welcome" }
+ 171219012052Z", "value":"http://Anyhealth.org/welcome" }
 givenName: Jeffrey
 mail: jeff.beck@mailinator.com
 o: Any Health
 seeAlso: o=${USER_BASE_DN}
 sn: Beck
 telephoneNumber: +1555-555-1212
-userPassword:: e1NTSEEyNTZ9Z25TOHZHT2ZhTGdrN0VhVVhYMWQ0Qy9FK1htRjMwWHZmMkZIS
- kNNdlJDR2luMWRDQjdUbExnPT0=
+userPassword: 2FederateM0re
 pf-connected-identity: auth-source=pf-local-identity:user-id=jbeck
 
 dn: entryUUID=103341be-b937-47b2-9ea1-660468b5fc63,ou=People,${USER_BASE_DN}
@@ -95,8 +94,7 @@ objectClass: top
 uid: test
 cn: test
 description: test basic entry
-userPassword:: e1NTSEEyNTZ9N2pwaFhxL09kNUZ0bW5kbXNURGwwWmh1R3VRKzhKdm82THQxZ
- DhFMmFjL2wxdmNVOFlxdmNRPT0=
+userPassword: 2FederateM0re
 pf-connected-identity: auth-source=pf-local-identity:user-id=test
 
 dn: entryUUID=ff99e13b-6ff8-40ef-9ce5-1cc5ef891d3e,ou=People,${USER_BASE_DN}
@@ -180,8 +178,7 @@ o: Any Health
 seeAlso: o=${USER_BASE_DN}
 sn: Beck
 telephoneNumber: +1555-555-7777
-userPassword:: e1NTSEEyNTZ9WFM3NE9xWmh3UnA3MEtRVEk1MmhjeTF3KzBnOGRSRFJsZS91N
- npzWUVmajhBTWFHU3l3N1N3PT0=
+userPassword: 2FederateM0re
 pf-connected-identity: auth-source=pf-local-identity:user-id=sbeck
 
 dn: entryUUID=1eaed605-c824-477a-a2ce-9c2a160c170c,ou=People,${USER_BASE_DN}
@@ -222,8 +219,7 @@ o: Any Health
 seeAlso: o=${USER_BASE_DN}
 sn: Doe
 telephoneNumber: +1555-555-9999
-userPassword:: e1NTSEEyNTZ9cWVnN0laNytmYjFOemFibjZ6WXpkaDh2bXRDVHZSZ2RxMU5zW
- FcvRWJaeEs3Q0xNSGcvMm93PT0=
+userPassword: 2FederateM0re
 pf-connected-identity: auth-source=pf-local-identity:user-id=drjohn
 
 dn: entryUUID=3008e96b-fda0-4cfe-ad68-b721c908a280,ou=People,${USER_BASE_DN}
@@ -265,8 +261,7 @@ o: ${USER_BASE_DN} Health
 seeAlso: o=${USER_BASE_DN}
 sn: CSR
 telephoneNumber: +1555-555-9999
-userPassword:: e1NTSEEyNTZ9ZUV3ZGpoSndkakZYbjRYL2JsK1BDMW9EOU9GNCtPL2RZS1phc
- kUzYkdtRlJXMitvVEhwUWZnPT0=
+userPassword: 2FederateM0re
 pf-connected-identity: auth-source=pf-local-identity:user-id=csr1
 
 dn: entryUUID=5be3c2ea-66ea-4b51-8c97-e9af0e89e74c,ou=Organizations,${USER_BASE_DN}

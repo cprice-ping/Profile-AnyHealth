@@ -28,3 +28,6 @@ MAX_HEAP_SIZE=1g
 # CERTIFICATE_NICKNAME=server-cert
 
 #TAIL_LOG_FILES="${SERVER_ROOT_DIR}/logs/sync ${SERVER_ROOT_DIR}/logs/errors"
+
+# The user base dn may be provided (Default: dc=example,dc=com)
+USER_BASE_DN=o=anyhealth.org

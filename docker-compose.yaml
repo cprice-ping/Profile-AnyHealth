@@ -1,9 +1,9 @@
 version: "3.1"
 
 services:
-  pf:
+  pingfederate:
     image: pingidentity/pingfederate:${PING_IDENTITY_DEVOPS_TAG}
-    command: wait-for pd:636 -t 300 -- entrypoint.sh start-server
+    command: wait-for pingdirectory:636 -t 300 -- entrypoint.sh start-server
     env_file:
       - ~/.pingidentity/devops
     environment:
@@ -15,7 +15,7 @@ services:
     networks:
       - pingnet
 
-  pd:
+  pingdirectory:
     image: pingidentity/pingdirectory:${PING_IDENTITY_DEVOPS_TAG}
     env_file:
       - ~/.pingidentity/devops
@@ -28,9 +28,9 @@ services:
     networks:
       - pingnet
 
-  dg:
+  datagovernance:
     image: pingidentity/pingdatagovernance:${PING_IDENTITY_DEVOPS_TAG}
-    command: wait-for pf:9031 -t 300 -- entrypoint.sh start-server
+    command: wait-for pingfederate:9031 -t 300 -- entrypoint.sh start-server
     environment:
       - SERVER_PROFILE_URL=https://github.com/cprice-ping/Profile-AnyHealth.git
       - SERVER_PROFILE_PATH=datagov
