@@ -173,7 +173,7 @@ fhirType: patient
 fhirVisit: { "type":"page", "id":"urn:ping:fhir:visit:page", "timestamp":"20
  171219012052Z", "value":"http://Anyhealth.com/welcome" }
 givenName: Sandra
-mail: sandra.beck@mailiantor.com
+mail: sandra.beck@mailinator.com
 o: Any Health
 seeAlso: o=${USER_BASE_DN}
 sn: Beck
